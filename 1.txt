@@ -1,0 +1,93 @@
+first we will work on the fronted side
+
+now we gonna create some components like modal and dialog based on materialui
+we created basic ui in game.js component 
+
+now we will add the logic of ondrop function in game.js
+
+created on drop and make a move function which handles thelogic using chess js
+and hence frontend is created
+
+now we will create the backend
+
+first we need to create an backemd server for this we will use
+expressjs and socket.io to create an http and websocket server
+
+Express is a minimal and flexible Node.js web application framework that offers a comprehensive set of features for building 
+web applications. With Express, you can effortlessly set up an HTTP server in a Node.js environment.
+
+Socket.io is a framework that offers a straightforward API for creating a WebSocket 
+server to facilitate WebSocket connections. WebSocket connections provide a two-way communication 
+channel between the client and server, where both sides can send and receive messages within a single 
+TCP connection. WebSocket connections are established over HTTP connections through a process of upgrading 
+the connection
+
+after doing the server connection implement multiplayer functionality for that we will use socket.io -client on client side
+
+
+each connected user needs to have an username for simplicity we will obtain a users desired username whenever the app is launced
+by making use of dialog box'
+
+whenever a username has been selected it will be stored in the state in the app componenet 
+
+then a websocket event named the username carrying the selected username as event data will be emitted to server via connection
+
+when the username event is received on the backend server the username which was sent as event dataa will be attaached to the clints socket data
+
+for this we need to create dialog box in app.js
+
+now we have to add a websocket event listener to the backend to listen to username event and retrieve data from client
+
+
+now we will focus on game initialization
+think of concept of rooms  in our app two players will be in a socket room event emitted to the room will be 
+received by both players
+
+for that we will create a new component initgame in client src directory with options on joining and creating a room
+first we gonna implement create room functionon client side
+
+create room function will emit a websocket event called createRoom will also update the socket.io server to listen to this event 
+and create a new room
+
+we also need a data structure to store  the rooms data a room data will include room id and a list of players
+in the room  for this we gonna use javscript map
+
+now we gonna implement join room for this client application has to emit a socket.io event named joinroom that will be 
+handled by the server.it will include the id of the room the player intends to join
+on the server side we need to add a listener to listen to a join room event and perform the actions necessary
+
+now we will update app component in app.js to render the game component only when the room has been created or joined by the user
+
+we added 3 new states namely room players and orientation
+since socket allows 2 way communication between the server and the user we added and socket event listener
+in use effect hook that listens to the opponent joined event 
+
+this event comes with the room data so we simply set the players state to the value of roomdata.players received from theevent data
+
+
+now we will work on handling the piece movements
+
+whenever a player makes a move your application should send a move event to the player on othe other end to reflect move made by player 2
+
+game compnenet will handle the logic
+
+in on drop function when a player makes a move we need to emit the socket event named move this event will contain move data once the other player
+recieves this event themake a move function will be calld on their end
+
+set up the backend server to listen to move event and transmit it to the second player
+
+now when server emiths the move event player 2 client needs to listen to this event and play the move on behalf 
+of player-1so we need to set up an event listener on the game component
+
+next well show the name of players and roomid ui 
+
+
+now we will work upon handling disconnections
+when a client has been disconnected socket emits a event called disconnect from client to server
+we will setup disconnect event listener in the server and emit a player disconnected event to all rooms 
+
+
+add a new useeffect hook in the game component in game.js
+
+freeing the resources when game hase neded it will get triggered when playeer clicks on continue button after game over
+
